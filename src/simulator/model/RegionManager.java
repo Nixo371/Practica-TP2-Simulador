@@ -45,6 +45,9 @@ public class RegionManager implements AnimalMapView {
 	}
 	
 	public void set_region(int row, int col, Region r) {
+		if (row >= 15 || col >= 20) {
+			int i = 0;
+		}
 		Region current_region = this._regions.get(row).get(col);
 		for (Animal a : current_region.get_animals()) {
 			r.add_animal(a);
@@ -108,12 +111,6 @@ public class RegionManager implements AnimalMapView {
 	
 	public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
 		ArrayList<Animal> animals_in_range = new ArrayList<Animal>();
-		if ((a.get_desire() > 80 && a.get_state() == State.MATE)
-			|| (a.get_energy() < 20 && a.get_state() == State.HUNGER)) {
-			int col = (int) a.get_position().getX() / 40;
-			int row = (int) a.get_position().getY() / 40;
-			int i = 0;
-		}
 		
 		// Busca las esquinas arriba a la izquierda y abajo a la derecha
 		Vector2D top_left = a.get_position().plus(new Vector2D(-a.get_sight_range(), -a.get_sight_range()));

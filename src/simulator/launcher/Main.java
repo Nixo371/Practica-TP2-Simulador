@@ -72,7 +72,7 @@ public class Main {
 	// default values for some parameters
 	//
 	private final static Double _default_time = 10.0; // in seconds
-	private final static Double _default_dt = 0.003; // in seconds
+	private final static Double _default_dt = 0.03; // in seconds
 
 	// some attributes to stores values corresponding to command-line parameters
 	//

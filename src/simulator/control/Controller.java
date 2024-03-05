@@ -35,7 +35,7 @@ public class Controller {
 				int ct = j_region_item.getJSONArray("col").getInt(1);
 				JSONObject j_region = j_region_item.getJSONObject("spec");
 				for (int r = rf; r <= rt; r++) {
-					for (int c = cf; r <= ct; c++) {
+					for (int c = cf; c <= ct; c++) {
 						this._sim.set_region(r, c, j_region);
 					}
 				}

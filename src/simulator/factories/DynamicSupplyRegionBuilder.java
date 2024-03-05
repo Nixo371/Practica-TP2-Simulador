@@ -8,7 +8,7 @@ import simulator.model.Region;
 public class DynamicSupplyRegionBuilder extends Builder<Region> {
 
 	public DynamicSupplyRegionBuilder() {
-		super("dynamicsupply", "Dynamic Supply Region");
+		super("dynamic", "Dynamic Supply Region");
 	}
 
 	@Override

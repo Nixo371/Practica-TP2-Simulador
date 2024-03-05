@@ -3,11 +3,12 @@ package simulator.factories;
 import org.json.JSONObject;
 
 import simulator.model.DynamicSupplyRegion;
+import simulator.model.Region;
 
-public class DynamicSupplyRegionBuilder extends Builder<DynamicSupplyRegion> {
+public class DynamicSupplyRegionBuilder extends Builder<Region> {
 
 	public DynamicSupplyRegionBuilder() {
-		super("default", "Dynamic Supply Region");
+		super("dynamicsupply", "Dynamic Supply Region");
 	}
 
 	@Override
@@ -15,19 +16,16 @@ public class DynamicSupplyRegionBuilder extends Builder<DynamicSupplyRegion> {
 		DynamicSupplyRegion dynamic_supply_region;
 		double factor;
 		double food;
-		if (!data.get("type").equals("default")) {
-			throw new IllegalArgumentException("The JSON file passed does not have the correct 'type' field value.\nFound: " + data.get("type") + "\nExpected: 'default'");
-		}
-		JSONObject j_data = data.getJSONObject("data");
+
 		try {
-			factor = j_data.getDouble("factor");
+			factor = data.getDouble("factor");
 		}
 		catch (Exception e) {
 			factor = 2.0;
 		}
 		
 		try {
-			food = j_data.getDouble("food");
+			food = data.getDouble("food");
 		}
 		catch (Exception e) {
 			food = 1000.0;

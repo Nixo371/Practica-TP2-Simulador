@@ -8,6 +8,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import simulator.factories.Factory;
+import simulator.misc.Vector2D;
 
 public class Simulator implements JSONable {
 	private Factory<Animal> _animals_factory;
@@ -57,6 +58,9 @@ public class Simulator implements JSONable {
 	
 	public void advance(double dt) {
 		this._time += dt;
+		if (this._time > 5) {
+			dt = dt;
+		}
 		
 		ArrayList<Animal> dead_animals = new ArrayList<Animal>();
 		for (Animal a : this._animal_list) {
@@ -78,10 +82,30 @@ public class Simulator implements JSONable {
 		ArrayList<Animal> babies = new ArrayList<Animal>();
 		for (Animal a : this._animal_list) {
 			if (a.is_pregnant()) {
-				babies.add(a.deliver_baby());
+				Animal baby = a.deliver_baby();
+				babies.add(baby);
 			}
 		}
 		for (Animal a : babies) {
+			double x = a.get_position().getX();
+			double y = a.get_position().getY();
+			int width = this._region_manager.get_width();
+			int height = this._region_manager.get_height();
+
+			while (x >= width) {
+				x = (x - width);
+			}
+			while (x < 0) {
+				x = (x + width);
+			}
+			while (y >= height) {
+				y = (y - height);
+			}
+			while (y < 0) {
+				y = (y + height);
+			}
+			
+			a.set_position(new Vector2D(x, y));
 			this.add_animal(a);
 		}
 	}

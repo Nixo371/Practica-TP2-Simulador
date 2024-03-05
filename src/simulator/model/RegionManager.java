@@ -45,24 +45,26 @@ public class RegionManager implements AnimalMapView {
 	}
 	
 	public void set_region(int row, int col, Region r) {
-		Region current_region = this._regions.get(col).get(row);
+		Region current_region = this._regions.get(row).get(col);
 		for (Animal a : current_region.get_animals()) {
 			r.add_animal(a);
 			this._animal_region.replace(a, current_region, r);
 		}
-		this._regions.get(col).set(row, r);
+		this._regions.get(row).set(col, r);
 	}
 	
-	public void register_animal(Animal a) {		
+	public void register_animal(Animal a) {
+		if (!this._animal_region.containsKey(a)) {
+			a.init(this);
+		}
+		
 		int	x_index = (int)(a.get_position().getX() / this._region_width);
 		int y_index = (int)(a.get_position().getY() / this._region_height);
-		
+
 		Region region = this._regions.get(y_index).get(x_index);
 		region.add_animal(a);
 		
 		this._animal_region.put(a, region);
-		
-		a.init(this);
 	}
 	
 	public void unregister_animal(Animal a) {
@@ -106,15 +108,21 @@ public class RegionManager implements AnimalMapView {
 	
 	public List<Animal> get_animals_in_range(Animal a, Predicate<Animal> filter) {
 		ArrayList<Animal> animals_in_range = new ArrayList<Animal>();
+		if ((a.get_desire() > 80 && a.get_state() == State.MATE)
+			|| (a.get_energy() < 20 && a.get_state() == State.HUNGER)) {
+			int col = (int) a.get_position().getX() / 40;
+			int row = (int) a.get_position().getY() / 40;
+			int i = 0;
+		}
 		
 		// Busca las esquinas arriba a la izquierda y abajo a la derecha
 		Vector2D top_left = a.get_position().plus(new Vector2D(-a.get_sight_range(), -a.get_sight_range()));
 		Vector2D bottom_right = a.get_position().plus(new Vector2D(a.get_sight_range(), a.get_sight_range()));
 		// Saca los indices dentro de la matriz de donde hay que mirar
-		int top_index = (int) Math.floor(top_left.getX() / this._region_width);
-		int left_index = (int) Math.floor(top_left.getY() / this._region_height);
-		int bottom_index = (int) Math.floor(bottom_right.getX() / this._region_width);
-		int right_index = (int) Math.floor(bottom_right.getY() / this._region_height);
+		int top_index = (int) Math.floor(top_left.getY() / this._region_height);
+		int left_index = (int) Math.floor(top_left.getX() / this._region_width);
+		int bottom_index = (int) Math.floor(bottom_right.getY() / this._region_height);
+		int right_index = (int) Math.floor(bottom_right.getX() / this._region_width);
 		
 		// Comprobar que son indices validos
 		if (top_index < 0)

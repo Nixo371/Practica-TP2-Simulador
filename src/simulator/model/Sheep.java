@@ -31,7 +31,7 @@ public class Sheep extends Animal {
 			case NORMAL:
 				// 1. Avanzar el animal
 				// (1.1) Si ha llegado al destino, seleccionar otro aleatorio
-				if (this.get_position().distanceTo(this.get_destination()) < 8) {
+				if (this.get_position().distanceTo(this.get_destination()) < 8.0) {
 					double x = Utils._rand.nextDouble(this._region_mngr.get_width());
 					double y = Utils._rand.nextDouble(this._region_mngr.get_height());
 					this.set_destination(new Vector2D(x, y));
@@ -41,7 +41,7 @@ public class Sheep extends Animal {
 				// (1.3) Envejecer
 				this.set_age(this.get_age() + dt);
 				// (1.4) Gastar energia
-				this.set_energy(this.get_energy() - (20 * dt));
+				this.set_energy(this.get_energy() - (20.0 * dt));
 				this.set_energy(Utils.constrain_value_in_range(this.get_energy(), 0.0, 100.0));
 				// (1.5) Desear mas
 				this.set_desire(this.get_desire() + (40.0 * dt));
@@ -53,21 +53,20 @@ public class Sheep extends Animal {
 					Predicate<Animal> carnivores = (a) -> a.get_diet() == Diet.CARNIVORE;
 					List<Animal> visibles = this._region_mngr.get_animals_in_range(this, carnivores);
 					this._danger_source = this._danger_strategy.select(this, visibles);
-					// Buscar la amenaza
 				}
 				// (2.2) En peligro?
-				else {
+				if (this._danger_source != null) {
 					this.set_state(State.DANGER);
 					this.set_mate_target(null);
 				}
-				if (this._danger_source == null && this.get_desire() > 65) {
+				if (this._danger_source == null && this.get_desire() > 65.0) {
 					this.set_state(State.MATE);
 					this._danger_source = null;
 				}
 				break;
 			case DANGER:
 				// 1. Se ha muerto
-				if (this.get_state() == State.DEAD) {
+				if (this._danger_source != null && this._danger_source.get_state() == State.DEAD) {
 					this._danger_source = null;
 				}
 
@@ -75,7 +74,7 @@ public class Sheep extends Animal {
 				if (this._danger_source == null) {
 					// x.1. Avanzar el animal
 					// (x.1.1) Si ha llegado al destino, seleccionar otro aleatorio
-					if (this.get_position().distanceTo(this.get_destination()) < 8) {
+					if (this.get_position().distanceTo(this.get_destination()) < 8.0) {
 						double x = Utils._rand.nextDouble(this._region_mngr.get_width());
 						double y = Utils._rand.nextDouble(this._region_mngr.get_height());
 						this.set_destination(new Vector2D(x, y));
@@ -85,7 +84,7 @@ public class Sheep extends Animal {
 					// (x.1.3) Envejecer
 					this.set_age(this.get_age() + dt);
 					// (x.1.4) Gastar energia
-					this.set_energy(this.get_energy() - (20 * dt));
+					this.set_energy(this.get_energy() - (20.0 * dt));
 					this.set_energy(Utils.constrain_value_in_range(this.get_energy(), 0.0, 100.0));
 					// (x.1.5) Desear mas
 					this.set_desire(this.get_desire() + (40.0 * dt));
@@ -100,7 +99,7 @@ public class Sheep extends Animal {
 					// (2.3) Envejecer
 					this.set_age(this.get_age() + dt);
 					// (2.4) Gastar energia
-					this.set_energy(this.get_energy() - (20 * 1.2 * dt));
+					this.set_energy(this.get_energy() - (20.0 * 1.2 * dt));
 					this.set_energy(Utils.constrain_value_in_range(this.get_energy(), 0.0, 100.0));
 					// (2.5) Desear mas
 					this.set_desire(this.get_desire() + (40.0 * dt));
@@ -112,13 +111,12 @@ public class Sheep extends Animal {
 				if (this._danger_source == null || this.get_position().distanceTo(this._danger_source.get_position()) > this.get_sight_range()) {
 					// (3.1.1) Buscar nueva amenaza
 					Predicate<Animal> carnivores = (a) -> a.get_diet() == Diet.CARNIVORE;
-					// carnivoros
 					List<Animal> visibles = this._region_mngr.get_animals_in_range(this, carnivores);
 					this._danger_source = this._danger_strategy.select(this, visibles);
 					// (3.1.2) No hay amenaza
 					if (this._danger_source == null) {
 						// (3.1.2.1) Determinar nuevo estado
-						if (this.get_desire() < 65) {
+						if (this.get_desire() < 65.0) {
 							this.set_state(State.NORMAL);
 							this._danger_source = null;
 							this.set_mate_target(null);
@@ -149,7 +147,7 @@ public class Sheep extends Animal {
 					// (2.1) Cambiar destino a la nueva pareja
 					this.set_destination(this.get_mate_target().get_position());
 					// (2.2) Moverse hacia el destino
-					this.move(2 * this.get_speed() * dt * Math.exp((this.get_energy() - 100.00) * 0.007));
+					this.move(2.0 * this.get_speed() * dt * Math.exp((this.get_energy() - 100.00) * 0.007));
 					// (2.3) Envejecer
 					this.set_age(this.get_age() + dt);
 					// (2.4) Gastar energia
@@ -176,7 +174,7 @@ public class Sheep extends Animal {
 				else {
 					// x.1. Avanzar el animal
 					// (x.1.1) Si ha llegado al destino, seleccionar otro aleatorio
-					if (this.get_position().distanceTo(this.get_destination()) < 8) {
+					if (this.get_position().distanceTo(this.get_destination()) < 8.0) {
 						double x = Utils._rand.nextDouble(this._region_mngr.get_width());
 						double y = Utils._rand.nextDouble(this._region_mngr.get_height());
 						this.set_destination(new Vector2D(x, y));
@@ -186,7 +184,7 @@ public class Sheep extends Animal {
 					// (x.1.3) Envejecer
 					this.set_age(this.get_age() + dt);
 					// (x.1.4) Gastar energia
-					this.set_energy(this.get_energy() - (20 * dt));
+					this.set_energy(this.get_energy() - (20.0 * dt));
 					this.set_energy(Utils.constrain_value_in_range(this.get_energy(), 0.0, 100.0));
 					// (x.1.5) Desear mas
 					this.set_desire(this.get_desire() + (40.0 * dt));
@@ -194,9 +192,11 @@ public class Sheep extends Animal {
 				}
 				
 				// 3. Buscar nueva amenaza
-				Predicate<Animal> carnivores = (a) -> a.get_diet() == Diet.CARNIVORE;
-				List<Animal> visibles = this._region_mngr.get_animals_in_range(this, carnivores);
-				this._danger_source = this._danger_strategy.select(this, visibles);
+				if (this._danger_source == null) {
+					Predicate<Animal> carnivores = (a) -> a.get_diet() == Diet.CARNIVORE;
+					List<Animal> visibles = this._region_mngr.get_animals_in_range(this, carnivores);
+					this._danger_source = this._danger_strategy.select(this, visibles);
+				}
 				
 				// 4. Cambiar estado
 				if (this._danger_source != null) {
@@ -218,39 +218,20 @@ public class Sheep extends Animal {
 		double y = this.get_position().getY();
 		int width = this._region_mngr.get_width();
 		int height = this._region_mngr.get_height();
-		boolean fuera = false;
-		while (x >= width) {
-			x = (x - width);
-			fuera = true;
-		}
-		while (x < 0) {
-			x = (x + width);
-			fuera = true;
-		}
-		while (y >= height) {
-			y = (y - height);
-			fuera = true;
-		}
-		while (y < 0) {
-			y = (y + height);
-			fuera = true;
-		}
-		if (fuera) {
-			this.set_position(new Vector2D(x, y));
+		if (x < 0 || y < 0 || x >= width || y >= height) {
 			this.set_state(State.NORMAL);
 			this._danger_source = null;
 			this.set_mate_target(null);
 		}
-
+		this.set_position(this.adjust_position(this.get_position()));
 
 		// Ver si muere
-		if (this.get_energy() <= 0) {
+		if (this.get_energy() <= 0.0) {
 			this.set_state(State.DEAD);
 		}
-		if (this.get_age() > 8) {
+		if (this.get_age() > 8.0) {
 			this.set_state(State.DEAD);
 		}
-
 
 		// Comer
 		if (this.get_state() != State.DEAD) {

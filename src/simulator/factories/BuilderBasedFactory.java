@@ -38,6 +38,10 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 		String type = info.getString("type");
 		Builder<T> builder = this._builders.get(type);
 		
+		if (builder == null) {
+			throw new IllegalArgumentException("Invalid type tag!");
+		}
+		
 		T instance = builder.create_instance(info.has("data") ? info.getJSONObject("data") : new JSONObject());
 		if (instance == null) {
 			throw new IllegalArgumentException("Unrecognized ‘info’:" + info.toString());
@@ -48,7 +52,6 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 		// if it is not null. The value you pass to create_instance is the following
 		// because ‘data’ is optional:
 		//
-		// TODO Find out why this is "getJSONObject" and not "JSONObject"
 		// info.has("data") ? info.getJSONObject("data") : new getJSONObject()
 		// …
 		// If no builder is found or the result is null ...

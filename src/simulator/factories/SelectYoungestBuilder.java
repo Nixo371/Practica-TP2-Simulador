@@ -13,10 +13,6 @@ public class SelectYoungestBuilder extends Builder<SelectionStrategy> {
 
 	@Override
 	protected SelectYoungest create_instance(JSONObject data) {
-		String type = data.getString("type");
-		if (!type.equals("youngest")) {
-			throw new IllegalArgumentException("The JSON file passed does not have the correct 'type' field value.\nFound: " + type + "\nExpected: 'youngest'");	
-		}
 		return (new SelectYoungest());
 	}
 

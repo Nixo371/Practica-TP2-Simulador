@@ -40,7 +40,6 @@ public abstract class Animal implements AnimalInfo {
 		this.genetic_code = genetic_code;
 		this._diet = diet;
 		this._sight_range = sight_range;
-		this._speed = init_speed;
 		this._mate_strategy = mate_strategy;
 		this._pos = pos;
 		this._age = 0.0;
@@ -49,6 +48,7 @@ public abstract class Animal implements AnimalInfo {
 		this._energy = 100.0;
 		this._desire = 0.0;
 		this._dest = null;
+		this._mate_target = null;
 		this._baby = null;
 		this._region_mngr = null;
 	}
@@ -61,15 +61,32 @@ public abstract class Animal implements AnimalInfo {
 		this._region_mngr = null;
 		this._state = State.NORMAL;
 		this._desire = 0.0;
-		this.genetic_code = p1.genetic_code;
-		this._diet = p1._diet;
-		this._energy = (p1._energy + p2._energy) / 2;
+		this.genetic_code = p1.get_genetic_code();
+		this._diet = p1.get_diet();
+		this._energy = (p1.get_energy() + p2.get_energy()) / 2;
 		this._pos = p1.get_position().plus(Vector2D.get_random_vector(-1, 1).scale(60.0 * (Utils._rand.nextGaussian() + 1)));
-		this._sight_range = Utils._rand.nextDouble((p1.get_sight_range() + p2.get_sight_range()) / 2);
-		this._speed = Utils._rand.nextDouble((p1.get_speed() + p2.get_speed()) / 2);
+		
+		this._sight_range = Utils.get_randomized_parameter((p1.get_sight_range() + p2.get_sight_range())/2, 0.2);
+		this._speed = Utils.get_randomized_parameter((p1.get_speed() + p2.get_speed()) / 2, 0.2);
 	
 		// TODO: Figure this out
-		this._mate_strategy = p1.get_mate_strategy();
+		this._mate_strategy = p2.get_mate_strategy();
+	}
+	
+	protected Vector2D adjust_position(Vector2D pos) {
+		double x = pos.getX();
+		double y = pos.getY();
+		int width = this._region_mngr.get_width();
+		int height = this._region_mngr.get_height();
+		if (x >= 0 && y >= 0 && x < width && y < height) {
+			return (pos);
+		}
+		while (x >= width) x = (x - width);
+		while (x < 0) x = (x + width);
+		while (y >= height) y = (y - height);
+		while (y < 0) y = (y + height);
+		
+		return (new Vector2D(x, y));
 	}
 
 	void init(AnimalMapView reg_mngr) {
@@ -80,9 +97,7 @@ public abstract class Animal implements AnimalInfo {
 			this._pos = new Vector2D(x, y);
 		}
 		else {
-			double x = Utils.constrain_value_in_range(this._pos.getX(), 0, this._region_mngr.get_width() - 1);
-			double y = Utils.constrain_value_in_range(this._pos.getY(), 0, this._region_mngr.get_height() - 1);
-			this._pos = new Vector2D(x, y);
+			this._pos = this.adjust_position(_pos);
 		}
 		double x = Utils._rand.nextDouble(this._region_mngr.get_width());
 		double y = Utils._rand.nextDouble(this._region_mngr.get_height());

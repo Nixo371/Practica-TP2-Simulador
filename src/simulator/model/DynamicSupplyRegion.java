@@ -29,6 +29,10 @@ public class DynamicSupplyRegion extends Region {
 		return (food);
 	}
 	
+	public String toString() {
+		return ("dynamic");
+	}
+	
 	public void update(double dt) {
 		if (Utils._rand.nextDouble() < 0.5) {
 			this._food += dt * this._factor;

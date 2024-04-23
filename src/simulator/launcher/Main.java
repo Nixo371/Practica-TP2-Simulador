@@ -8,6 +8,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -43,6 +45,7 @@ import simulator.model.SelectionStrategy;
 import simulator.model.Sheep;
 import simulator.model.Simulator;
 import simulator.model.Wolf;
+import simulator.view.MainWindow;
 import simulator.view.SimpleObjectViewer;
 import simulator.view.SimpleObjectViewer.ObjInfo;
 import simulator.control.Controller;
@@ -73,15 +76,16 @@ public class Main {
 	//
 	private final static Double _default_time = 10.0; // in seconds
 	private final static Double _default_dt = 0.03; // in seconds
+	private final static String _default_mode = "gui";
 
 	// some attributes to stores values corresponding to command-line parameters
 	//
 	private static Double _time = null;
-	private static Double _dt = null; 
+	public static Double _dt = null; 
 	private static String _in_file = null;
 	private static String _out_file = null;
 	private static boolean _sv = false;
-	private static ExecMode _mode = ExecMode.BATCH;
+	private static ExecMode _mode = ExecMode.GUI;
 
 	private static void parse_args(String[] args) {
 
@@ -100,6 +104,7 @@ public class Main {
 			parse_out_file_option(line);
 			parse_simple_viewer_option(line);
 			parse_time_option(line);
+			parse_mode_option(line);
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
@@ -142,6 +147,8 @@ public class Main {
 				.desc("An real number representing the total simulation time in seconds. Default value: "
 						+ _default_time + ".")
 				.build());
+		// mode selector
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc("Enables the BATCH mode.").build());		
 
 		return cmdLineOptions;
 	}
@@ -195,8 +202,19 @@ public class Main {
 			throw new ParseException("Invalid value for time: " + t);
 		}
 	}
-	private static Factory<Animal> animal_factory;
-	private static Factory<Region> region_factory;
+	
+	private static void parse_mode_option(CommandLine line) throws ParseException {
+		String t = line.getOptionValue("m", _default_mode);
+		if (t.equals("batch")) {
+			_mode = ExecMode.BATCH;
+		}
+		else {
+			_mode = ExecMode.GUI;
+		}
+	}
+	
+	public static Factory<Animal> animal_factory;
+	public static Factory<Region> region_factory;
 
 	private static void init_factories() {
 		List<Builder<SelectionStrategy>> selection_strategy_builders = new ArrayList<>();
@@ -257,7 +275,36 @@ public class Main {
 	}
 
 	private static void start_GUI_mode() throws Exception {
+		int width = 800;
+		int height = 600;
+		int rows = 15;
+		int cols = 20;
+		JSONObject json = null;
 		
+		if (_in_file != null) {
+			InputStream is = new FileInputStream(new File(_in_file));
+			
+			// (1) Load file and convert to JSONObject
+			json = load_JSON_file(is);
+			
+			width = json.getInt("width");
+			height = json.getInt("height");
+			rows = json.getInt("rows");
+			cols = json.getInt("cols");
+		}
+		// (3) Create Simulator instance
+		
+		Simulator simulator = new Simulator(cols, rows, width, height, animal_factory, region_factory);
+		
+		// (4) Create Controller instance
+		Controller controller = new Controller(simulator);
+		
+		// (5) Call `load_data` with the input JSONObject
+		if (_in_file != null) {
+			controller.load_data(json);
+		}
+		//
+		SwingUtilities.invokeAndWait(() -> new MainWindow(controller));
 	}
 
 	private static void start(String[] args) throws Exception {

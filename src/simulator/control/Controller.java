@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import simulator.model.AnimalInfo;
+import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.Simulator;
 import simulator.view.SimpleObjectViewer;
@@ -21,26 +22,29 @@ public class Controller {
 		this._sim = sim;
 	}
 	
+	private void set_regions_from_JSON(JSONArray j_regions) {
+		for (int i = 0; i < j_regions.length(); i++) {
+			JSONObject j_region_item = j_regions.getJSONObject(i);
+			int rf = j_region_item.getJSONArray("row").getInt(0);
+			int rt = j_region_item.getJSONArray("row").getInt(1);
+			int cf = j_region_item.getJSONArray("col").getInt(0);
+			int ct = j_region_item.getJSONArray("col").getInt(1);
+			JSONObject j_region = j_region_item.getJSONObject("spec");
+			for (int r = rf; r <= rt; r++) {
+				for (int c = cf; c <= ct; c++) {
+					this._sim.set_region(r, c, j_region);
+				}
+			}
+			i++;
+		}
+	}
+	
 	public void load_data(JSONObject data) {
 		JSONArray j_animals = data.getJSONArray("animals");
 		
 		// regions
 		if (data.has("regions")) {
-			JSONArray j_regions = data.getJSONArray("regions");
-			for (int i = 0; i < j_regions.length(); i++) {
-				JSONObject j_region_item = j_regions.getJSONObject(i);
-				int rf = j_region_item.getJSONArray("row").getInt(0);
-				int rt = j_region_item.getJSONArray("row").getInt(1);
-				int cf = j_region_item.getJSONArray("col").getInt(0);
-				int ct = j_region_item.getJSONArray("col").getInt(1);
-				JSONObject j_region = j_region_item.getJSONObject("spec");
-				for (int r = rf; r <= rt; r++) {
-					for (int c = cf; c <= ct; c++) {
-						this._sim.set_region(r, c, j_region);
-					}
-				}
-				i++;
-			}
+			this.set_regions_from_JSON(data.getJSONArray("regions"));
 		}
 		
 		// animals
@@ -61,6 +65,15 @@ public class Controller {
 		(int) a.get_position().getX(),
 		(int) a.get_position().getY(), (int)Math.round(a.get_age()) + 2));
 		return ol;
+	}
+	
+	public void set_regions(JSONObject rs) {
+		// Esto asume que rs ya tiene un JSONArray "regions"
+		this.set_regions_from_JSON(rs.getJSONArray("regions"));
+	}
+	
+	public void reset(int cols, int rows, int width, int height) {
+		this._sim.reset(cols, rows, width, height);
 	}
 	
 	public void run(double t, double dt, boolean sv, OutputStream out) {
@@ -87,6 +100,18 @@ public class Controller {
 		if (sv) {
 			view.close();
 		}
+	}
+	
+	public void advance(double dt) {
+		this._sim.advance(dt);
+	}
+	
+	public void addObserver(EcoSysObserver o) {
+		this._sim.addObserver(o);
+	}
+	
+	public void removeObserver(EcoSysObserver o) {
+		this._sim.removeObserver(o);
 	}
 
 }

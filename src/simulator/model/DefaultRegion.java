@@ -19,6 +19,10 @@ public class DefaultRegion extends Region {
 		
 		return (60.0 * Math.exp(-Math.max(0, n - 5.0) * 2.0) * dt);
 	}
+	
+	public String toString() {
+		return ("default");
+	}
 
 	@Override
 	public void update(double dt) {

@@ -2,6 +2,7 @@ package simulator.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -45,9 +46,6 @@ public class RegionManager implements AnimalMapView {
 	}
 	
 	public void set_region(int row, int col, Region r) {
-		if (row >= 15 || col >= 20) {
-			int i = 0;
-		}
 		Region current_region = this._regions.get(row).get(col);
 		for (Animal a : current_region.get_animals()) {
 			r.add_animal(a);
@@ -85,7 +83,6 @@ public class RegionManager implements AnimalMapView {
 		int y_index = (int) Math.floor(a.get_position().getY() / this._region_height);
 		
 		Region current_region = this._animal_region.get(a);
-		// TODO CHECK THIS
 		Region actual_region = this._regions.get(y_index).get(x_index);
 		if (current_region != actual_region) {
 			actual_region.add_animal(a);
@@ -184,5 +181,31 @@ public class RegionManager implements AnimalMapView {
 	@Override
 	public int get_region_height() {
 		return (this._region_height);
+	}
+	
+	@Override
+	public Iterator<RegionData> iterator() {
+		Iterator<RegionData> iterator = new Iterator<RegionData>() {
+			private int col = 0;
+			private int row = 0;
+			
+			@Override
+			public boolean hasNext() {
+				return (col < _columns && row < _rows);
+			}
+			
+			@Override
+			public RegionData next() {
+				RegionData region_data = new RegionData(row, col, _regions.get(row).get(col));
+				col++;
+				if (col == _columns) {
+					col = 0;
+					row++;
+				}
+				return (region_data);
+			}
+		};
+		
+		return (iterator);
 	}
 }

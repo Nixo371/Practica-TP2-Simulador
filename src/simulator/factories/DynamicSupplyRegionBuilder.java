@@ -17,22 +17,26 @@ public class DynamicSupplyRegionBuilder extends Builder<Region> {
 		double factor;
 		double food;
 
-		try {
+		if (data.has("factor")) {
 			factor = data.getDouble("factor");
 		}
-		catch (Exception e) {
+		else {
 			factor = 2.0;
 		}
 		
-		try {
+		if (data.has("food")) {
 			food = data.getDouble("food");
 		}
-		catch (Exception e) {
+		else {
 			food = 1000.0;
 		}
 		
 		dynamic_supply_region = new DynamicSupplyRegion(food, factor);
 		return (dynamic_supply_region);
+	}
+	
+	protected void fill_in_data(JSONObject o) {
+		
 	}
 
 }

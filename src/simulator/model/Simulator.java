@@ -131,9 +131,6 @@ public class Simulator implements JSONable, Observable<EcoSysObserver> {
 		this._observer_list.remove(o);
 	}
 	
-	private void notify_on_register() {
-		
-	}
 	private void notify_on_reset() {
 		List<AnimalInfo> animals = new ArrayList<>(this._animal_list);
 		for (EcoSysObserver o : this._observer_list) {

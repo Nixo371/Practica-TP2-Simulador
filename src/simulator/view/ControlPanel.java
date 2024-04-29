@@ -22,7 +22,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import simulator.control.Controller;
-import simulator.misc.Utils;
 
 class ControlPanel extends JPanel {
 	private Controller _ctrl;
@@ -40,8 +39,6 @@ class ControlPanel extends JPanel {
 	private JSpinner _steps;
 	private JTextField _dt;
 	
-	// TODO añade más atributos aquí …
-	
 	ControlPanel(Controller ctrl) {
 		this._ctrl = ctrl;
 		this.initGUI();
@@ -51,11 +48,6 @@ class ControlPanel extends JPanel {
 		setLayout(new BorderLayout());
 		_toolaBar = new JToolBar();
 		add(_toolaBar, BorderLayout.PAGE_START);
-		
-		// TODO crear los diferentes botones/atributos y añadirlos a _toolaBar.
-		// Todos ellos han de tener su correspondiente tooltip. Puedes utilizar
-		// _toolaBar.addSeparator() para añadir la línea de separación vertical
-		// entre las componentes que lo necesiten.
 		
 		// File Button
 		this._toolaBar.add(Box.createGlue());
@@ -97,7 +89,7 @@ class ControlPanel extends JPanel {
 		this._stopButton = new JButton();
 		this._stopButton.setToolTipText("Viewer");
 		this._stopButton.setIcon(new ImageIcon("resources/icons/stop.png"));
-		this._stopButton.addActionListener((e) -> run_sim(0, 0)); // TODO
+		this._stopButton.addActionListener((e) -> run_sim(0, 0));
 		this._toolaBar.add(this._stopButton);
 		
 		// Steps Input
@@ -131,8 +123,6 @@ class ControlPanel extends JPanel {
 		this._fc = new JFileChooser();
 		this._fc.setCurrentDirectory(new File(System.getProperty("user.dir") + "/resources/examples"));
 
-		// TODO Inicializar _changeRegionsDialog con instancias del diálogo de cambio
-		// de regiones
 		this._changeRegionsDialog = new ChangeRegionsDialog(this._ctrl);
 	}
 	
@@ -160,10 +150,6 @@ class ControlPanel extends JPanel {
 	}
 	
 	private void run_button_pressed() {
-		// TODO:(1) deshabilita todos los botones excepto el botón de stop , y cambia
-				// el valor del atributo _stopped a false; (2) saca el valor del delta-time del correspondiente
-				// JTextField; y (3) llama al método run_sim con el valor actual de pasos, especificado en el
-				// correspondiente JSpinner:
 		this._fileButton.setEnabled(false);
 		this._viewerButton.setEnabled(false);
 		this._regionsButton.setEnabled(false);
@@ -184,8 +170,7 @@ class ControlPanel extends JPanel {
 				SwingUtilities.invokeLater(() -> run_sim(n - 1, dt));
 			}
 			catch (Exception e) {
-				e.printStackTrace();
-				// TODO: ViewUtils.showErrorMsg(e.getMessage());
+				ViewUtils.showErrorMsg(e.getMessage());
 
 				this._fileButton.setEnabled(true);
 				this._viewerButton.setEnabled(true);

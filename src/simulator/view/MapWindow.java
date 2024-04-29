@@ -35,9 +35,6 @@ public class MapWindow extends JFrame implements EcoSysObserver {
 
 		this._viewer = new MapViewer();
 		mainPanel.add(this._viewer, BorderLayout.CENTER);
-		// TODO en el método windowClosing, eliminar ‘MapWindow.this’ de los
-		// observadores
-		// addWindowListener(new WindowListener() { ... });
 		pack();
 		if (_parent != null)
 			setLocation(
@@ -59,18 +56,14 @@ public class MapWindow extends JFrame implements EcoSysObserver {
 
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onAvanced(double time, MapInfo map, List<AnimalInfo> animals, double dt) {
-		SwingUtilities.invokeLater(() -> { this._viewer.update(getGraphics()); });
+		SwingUtilities.invokeLater(() -> { this._viewer.update(animals, time); });
 	}
 }

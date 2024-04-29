@@ -7,7 +7,6 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import simulator.control.Controller;
-import simulator.model.Animal;
 import simulator.model.AnimalInfo;
 import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
@@ -15,7 +14,6 @@ import simulator.model.RegionInfo;
 import simulator.model.State;
 
 class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
-	// TODO definir atributos necesarios
 	private int _cols;
 	private int _rows;
 	private int[][] _table;
@@ -108,30 +106,15 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {
-		this._cols = State.values().length;
-		
-		HashSet<String> set = new HashSet<>();
-		for (AnimalInfo a : animals) {
-			set.add(a.get_genetic_code());
-		}
-		for (String s : set) {
-			this._species.add(s);
-		}
-		this._rows = set.size();
-		
-		this._table = new int[this._cols][this._rows];
+		this.onRegister(time, map, animals);
 	}
 
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

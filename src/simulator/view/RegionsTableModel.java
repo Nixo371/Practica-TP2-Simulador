@@ -11,7 +11,6 @@ import simulator.model.Diet;
 import simulator.model.EcoSysObserver;
 import simulator.model.MapInfo;
 import simulator.model.RegionInfo;
-import simulator.model.State;
 
 class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 	private int _cols;
@@ -125,19 +124,21 @@ class RegionsTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onReset(double time, MapInfo map, List<AnimalInfo> animals) {
-		// TODO Auto-generated method stub
-		
+		this.onRegister(time, map, animals);
 	}
 
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void onRegionSet(int row, int col, MapInfo map, RegionInfo r) {
-		// TODO Auto-generated method stub
-		
+		for (int i = 0; i < this._regions.size(); i++) {
+			if (this._regions.get(i).row() == row && this._regions.get(i).col() == col) {
+				this._regions.set(i, new MapInfo.RegionData(row, col, r));
+			}
+		}
+		this.fireTableDataChanged();
 	}
 
 	@Override

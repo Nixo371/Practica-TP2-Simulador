@@ -41,7 +41,6 @@ public class MainWindow extends JFrame {
 		region_table.setPreferredSize(new Dimension(500, 250));
 		contentPanel.add(region_table);
 		
-		// TODO addWindowListener( … );
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		pack();
 		setVisible(true);

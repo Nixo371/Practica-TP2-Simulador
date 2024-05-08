@@ -159,7 +159,6 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 			while (it.hasNext()) {
 				String key = it.next();
 				table.setValueAt(key, i, 0);
-				table.setValueAt(data.getJSONObject(key).get("value"), i, 1);
 				table.setValueAt(data.getJSONObject(key).get("desc"), i, 2);
 				i++;
 			}
@@ -175,9 +174,11 @@ public class ChangeRegionsDialog extends JDialog implements EcoSysObserver {
 		JSONObject region_data = new JSONObject();
 		for (int i = 0; i < table.getRowCount(); i++) {
 			String key = table.getValueAt(i, 0).toString();
-			double value = Double.parseDouble(table.getValueAt(i, 1).toString());
-			
-			region_data.put(key, value);
+			double value;
+			if (table.getValueAt(i, 1) != null) {
+				value = Double.parseDouble(table.getValueAt(i, 1).toString());
+				region_data.put(key, value);
+			}
 		}
 		String region_type = Main.region_factory.get_info().get(_regionsComboBox.getSelectedIndex()).getString("type");
 		

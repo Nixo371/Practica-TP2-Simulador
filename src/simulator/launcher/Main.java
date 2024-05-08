@@ -98,13 +98,13 @@ public class Main {
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine line = parser.parse(cmdLineOptions, args);
+			parse_mode_option(line);
 			parse_dt_option(line);
 			parse_help_option(line, cmdLineOptions);
 			parse_in_file_option(line);
 			parse_out_file_option(line);
 			parse_simple_viewer_option(line);
 			parse_time_option(line);
-			parse_mode_option(line);
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!

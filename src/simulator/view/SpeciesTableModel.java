@@ -19,6 +19,7 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 	private int[][] _table;
 	private ArrayList<String> _column_names;
 	private ArrayList<String> _species;
+	HashSet<String> genetic_codes;
 	
 	SpeciesTableModel(Controller ctrl) {
 		this._column_names = new ArrayList<String>();
@@ -75,7 +76,9 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 					break;
 				}
 			}
-			
+			if (species_index == 2) {
+				species_index = 2;
+			}
 			this._table[state_index][species_index]++;
 		}
 	}
@@ -86,14 +89,16 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 		
 		// HashSet no permite duplicados, por lo que si metemos todos los codigos geneticos, su
 		// tamano final sera el numero de codigos geneticos presentes
-		HashSet<String> set = new HashSet<>();
+		this.genetic_codes = new HashSet<>();
+		this._species = new ArrayList<>();
+		
 		for (AnimalInfo a : animals) {
-			set.add(a.get_genetic_code());
+			this.genetic_codes.add(a.get_genetic_code());
 		}
-		for (String s : set) {
+		for (String s : this.genetic_codes) {
 			this._species.add(s);
 		}
-		this._rows = set.size();
+		this._rows = this.genetic_codes.size();
 		
 		this._column_names.add("Species");
 		for (State s : State.values()) {
@@ -111,6 +116,11 @@ class SpeciesTableModel extends AbstractTableModel implements EcoSysObserver {
 
 	@Override
 	public void onAnimalAdded(double time, MapInfo map, List<AnimalInfo> animals, AnimalInfo a) {
+		this.genetic_codes.add(a.get_genetic_code());
+		if (this._rows < this.genetic_codes.size()) {
+			this.onRegister(time, map, animals);
+		}
+		this.fireTableDataChanged();
 	}
 
 	@Override

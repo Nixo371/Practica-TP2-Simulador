@@ -87,7 +87,7 @@ class ControlPanel extends JPanel {
 		this._toolaBar.add(Box.createGlue());
 		this._toolaBar.addSeparator();
 		this._stopButton = new JButton();
-		this._stopButton.setToolTipText("Viewer");
+		this._stopButton.setToolTipText("Stop");
 		this._stopButton.setIcon(new ImageIcon("resources/icons/stop.png"));
 		this._stopButton.addActionListener((e) -> run_sim(0, 0));
 		this._toolaBar.add(this._stopButton);
